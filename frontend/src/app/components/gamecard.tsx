@@ -14,12 +14,20 @@ interface Props {
 const GameCard: React.FC<Props> = ({ game }) => {
     const [result, setResult] = useState<string | null>(null);
 
-    const handlePredict = () => {
-    const mockProbability = Math.random();
-    const prediction = mockProbability > 0.5 ? "WIN" : "LOSE";
-    setResult(
-      `Patriots will likely ${prediction} (Confidence: ${(mockProbability * 100).toFixed(1)}%)`
-    );
+    const handlePredict = async () => {
+        try {
+            const res = await fetch("http://127.0.0.1:5000/predict", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(game), // your {date, opponent, location, time}
+            });
+            const data = await res.json(); // { result, confidence }
+            setResult(
+              `Patriots will likely ${data.result} (Confidence: ${(data.confidence * 100).toFixed(1)}%)`
+            );
+            } catch (e) {
+            setResult("Prediction service unavailable. Try again.");
+            }
     };
 
     return (
