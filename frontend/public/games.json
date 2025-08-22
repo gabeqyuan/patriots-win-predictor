@@ -1,0 +1,17 @@
+[
+    {
+        "date": "2025-09-07",
+        "opponent": "Jets",
+        "home": true
+    },
+    {
+        "date": "2025-09-14",
+        "opponent": "Dolphins",
+        "home": false
+    },
+    {
+        "date": "2025-09-21",
+        "opponent": "Bills",
+        "home": true
+    }
+]

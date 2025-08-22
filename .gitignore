@@ -1,0 +1,21 @@
+# --- Python (backend) ---
+backend/venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Node (frontend) ---
+frontend/node_modules/
+frontend/.env
+frontend/build/
+frontend/.next/
+frontend/dist/
+
+# --- System ---
+.DS_Store
+*.log
+
+# --- IDE/editor ---
+.vscode/
+.idea/
