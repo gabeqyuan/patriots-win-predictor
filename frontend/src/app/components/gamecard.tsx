@@ -3,8 +3,8 @@ import React, { useState } from "react";
 interface Game {
     date: string;
     opponent: string;
-    location: "home" | "away";
-    time: string;
+    home: boolean;
+    time: string | null;
 }
 
 interface Props {
@@ -31,15 +31,18 @@ const GameCard: React.FC<Props> = ({ game }) => {
     };
 
     return (
-    <div
-        className="border rounded-lg p-4 shadow hover:shadow-lg transition cursor-pointer bg-white text-gray-900 hover:bg-blue-50"
-        onClick={handlePredict}
->
-        <h2 className="text-lg font-bold text-gray-900">{game.opponent}</h2>
-        <p>{game.date} - {game.time}</p>
-        <p className="capitalize">{game.location}</p>
-        {result && <p className="mt-2 text-green-700 font-semibold">{result}</p>}
-</div>
+        <div
+            className="border rounded-lg p-4 shadow hover:shadow-lg transition cursor-pointer bg-white text-gray-900 hover:bg-blue-50"
+            onClick={handlePredict}
+        >
+            <h2 className="text-lg font-bold text-gray-900">{game.opponent}</h2>
+            <p>{game.date} - {game.time ?? "TBD"}</p>
+            <p>{game.home ? "Home" : "Away"}</p>
+
+        {result && (
+            <p className="mt-2 text-green-700 font-semibold">{result}</p>
+        )}
+        </div>
 
     );
 };

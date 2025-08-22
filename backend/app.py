@@ -1,38 +1,24 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import random
 
 app = Flask(__name__)
-# Allow calls from your Next.js dev server
-CORS(app, resources={r"/*": {"origins": ["http://localhost:3000"]}})
+CORS(app)
 
-@app.get("/")
-def health():
-    return {"ok": True, "service": "Patriots Win Predictor API"}
-
-@app.post("/predict")
+@app.route("/predict", methods=["POST"])
 def predict():
-    """
-    Expects JSON like:
-    {
-        "date": "2025-09-07",
-        "opponent": "Jets",
-        "location": "home",   # or "away"
-        "time": "1:00 PM"
-    }
-    """
     data = request.get_json(force=True) or {}
-    location = data.get("location", "home")
-
-    # simple heuristic so it isn't pure random
-    base = 0.55 if location == "home" else 0.45
-    jitter = random.uniform(-0.08, 0.08)
-    p = max(0.05, min(0.95, base + jitter))
-
-    result = "WIN" if p >= 0.5 else "LOSE"
-    confidence = p if result == "WIN" else 1 - p
-
-    return jsonify({"result": result, "confidence": round(confidence, 2)})
     
+    is_home = data.get("home", True)  # default True if missing
+    opponent = data.get("opponent", "Unknown")
+    date = data.get("date", "")
+    time = data.get("time", "")
+
+    # Dummy prediction logic
+    import random
+    prediction = "win" if random.random() > 0.5 else "lose"
+    confidence = random.random()
+
+    return jsonify({"result": prediction, "confidence": confidence})
+
 if __name__ == "__main__":
-    app.run(debug=True)  # runs on http://127.0.0.1:5000
+    app.run(host="0.0.0.0", port=5000)

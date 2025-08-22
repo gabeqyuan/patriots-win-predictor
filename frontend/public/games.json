@@ -1,17 +1,19 @@
 [
-    {
-        "date": "2025-09-07",
-        "opponent": "Jets",
-        "home": true
-    },
-    {
-        "date": "2025-09-14",
-        "opponent": "Dolphins",
-        "home": false
-    },
-    {
-        "date": "2025-09-21",
-        "opponent": "Bills",
-        "home": true
-    }
+    {"date": "2025-09-07", "opponent": "Raiders", "home": true, "time": "1:00 PM"},
+    {"date": "2025-09-14", "opponent": "Dolphins", "home": false, "time": "1:00 PM"},
+    {"date": "2025-09-21", "opponent": "Steelers", "home": true, "time": "1:00 PM"},
+    {"date": "2025-09-28", "opponent": "Panthers", "home": true, "time": "1:00 PM"},
+    {"date": "2025-10-05", "opponent": "Bills", "home": false, "time": "8:20 PM"},
+    {"date": "2025-10-12", "opponent": "Saints", "home": false, "time": "4:25 PM"},
+    {"date": "2025-10-19", "opponent": "Titans", "home": false, "time": "1:00 PM"},
+    {"date": "2025-10-26", "opponent": "Browns", "home": true, "time": "1:00 PM"},
+    {"date": "2025-11-02", "opponent": "Falcons", "home": true, "time": "1:00 PM"},
+    {"date": "2025-11-09", "opponent": "Buccaneers", "home": false, "time": "1:00 PM"},
+    {"date": "2025-11-11", "opponent": "Jets", "home": true, "time": "8:15 PM"},
+    {"date": "2025-11-23", "opponent": "Bengals", "home": false, "time": "1:00 PM"},
+    {"date": "2025-12-01", "opponent": "Giants", "home": true, "time": "8:15 PM"},
+    {"date": "2025-12-14", "opponent": "Bills", "home": true, "time": "1:00 PM"},
+    {"date": "2025-12-21", "opponent": "Ravens", "home": false, "time": "1:00 PM"},
+    {"date": "2025-12-28", "opponent": "Jets", "home": false, "time": "1:00 PM"},
+    {"date": "2025-01-03", "opponent": "Dolphins", "home": true, "time": null}
 ]
