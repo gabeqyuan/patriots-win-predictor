@@ -1,6 +1,16 @@
-venv/
+# venv + caches
+.venv/
 __pycache__/
 *.pyc
-data/raw/
-models_artifacts/
-.env
+*.pyo
+
+# data + large artifacts
+data/
+models/*.pkl
+models/*.parquet
+# keep ONLY small joblib model if you want:
+# !models/win_model.joblib
+
+# OS/IDE
+.DS_Store
+*.log
