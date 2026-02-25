@@ -1,43 +1,58 @@
 import os
 import nfl_data_py as nfl
 import pandas as pd
+import sys
 
-RAW_DIR = os.path.join(os.path.dirname(__file__), os.pardir, "data", "raw")
-os.makedirs(RAW_DIR, exist_ok=True)
+# Add parent to path so we can import config
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), os.pardir))
 
-def fetch_patriots_schedule():
-    print("Downloading 2025 schedule...")
-    df = nfl.import_schedules([2025])
+from src.config import RAW_DIR, TRAIN_SEASONS, PREDICT_SEASON
 
-    # Save full schedule for feature engineering
-    full_path = os.path.join(RAW_DIR, "schedules.csv")
+def fetch_schedules():
+    """
+    Download historical seasons (for training) + the upcoming season (for prediction).
+    """
+    all_seasons = TRAIN_SEASONS + [PREDICT_SEASON]
+    print(f"Downloading schedules for seasons {all_seasons[0]}–{all_seasons[-1]}...")
+    df = nfl.import_schedules(all_seasons)
+
+    full_path = os.path.join(str(RAW_DIR), "schedules.csv")
     df.to_csv(full_path, index=False)
-    print(f"✅ Saved full NFL schedule to {full_path}")
+    print(f"✅ Saved full NFL schedule ({len(df)} rows) to {full_path}")
+    return df
 
-    # Patriots games only
-    pats_schedule = df[(df["home_team"] == "NE") | (df["away_team"] == "NE")].copy()
 
-    # --- Normalize columns ---
-    pats_schedule["date"] = pd.to_datetime(pats_schedule["gameday"]).dt.date.astype(str)
-    pats_schedule["opponent"] = pats_schedule.apply(
+def fetch_patriots_2025_games(df: pd.DataFrame | None = None):
+    """
+    Extract Patriots 2025 schedule for the frontend games.json / games.csv.
+    """
+    if df is None:
+        df = pd.read_csv(os.path.join(str(RAW_DIR), "schedules.csv"))
+
+    pats = df[
+        (df["season"] == PREDICT_SEASON)
+        & ((df["home_team"] == "NE") | (df["away_team"] == "NE"))
+    ].copy()
+
+    pats["date"] = pd.to_datetime(pats["gameday"]).dt.date.astype(str)
+    pats["opponent"] = pats.apply(
         lambda x: x["away_team"] if x["home_team"] == "NE" else x["home_team"], axis=1
     )
-    pats_schedule["home"] = pats_schedule["home_team"] == "NE"
+    pats["home"] = pats["home_team"] == "NE"
 
-    # Handle time column (sometimes missing)
-    if "game_time" in pats_schedule.columns:
-        pats_schedule["time"] = pats_schedule["game_time"].fillna("").astype(str).str.strip().replace("", None)
+    if "gametime" in pats.columns:
+        pats["time"] = pats["gametime"].fillna("").astype(str).str.strip().replace("", None)
     else:
-        pats_schedule["time"] = None
+        pats["time"] = None
 
-    # Select the final columns
-    output = pats_schedule[["date", "opponent", "home", "time"]]
+    output = pats[["date", "opponent", "home", "time"]]
 
-    # Save Pats-only schedule separately
-    pats_path = os.path.join(RAW_DIR, "games.csv")
+    pats_path = os.path.join(str(RAW_DIR), "games.csv")
     output.to_csv(pats_path, index=False)
-    print(f"✅ Saved Patriots schedule to {pats_path}")
+    print(f"✅ Saved Patriots {PREDICT_SEASON} schedule to {pats_path}")
+    return output
 
 
 if __name__ == "__main__":
-    fetch_patriots_schedule()
+    sched = fetch_schedules()
+    fetch_patriots_2025_games(sched)

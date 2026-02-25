@@ -1,6 +1,6 @@
 from __future__ import annotations
 import pandas as pd
-from .config import RAW_DIR, PROC_DIR, TEAM
+from .config import RAW_DIR, PROC_DIR, TEAM, TRAIN_SEASONS
 
 def _team_perspective_rows(sched: pd.DataFrame) -> pd.DataFrame:
     """
@@ -8,7 +8,8 @@ def _team_perspective_rows(sched: pd.DataFrame) -> pd.DataFrame:
     Columns out: season, week, game_id, date, team, opp, is_home, pts_for, pts_against, won
     """
     keep_cols = [
-        "game_id","season","week","gameday","home_team","away_team","home_score","away_score"
+        "game_id","season","week","gameday","home_team","away_team","home_score","away_score",
+        "spread_line","home_moneyline","away_moneyline"
     ]
     s = sched[keep_cols].dropna(subset=["home_team","away_team"]).copy()
 
@@ -21,7 +22,10 @@ def _team_perspective_rows(sched: pd.DataFrame) -> pd.DataFrame:
         "opp":      s["away_team"],
         "is_home":  1,
         "pts_for":  s["home_score"],
-        "pts_against": s["away_score"]
+        "pts_against": s["away_score"],
+        "spread":   s["spread_line"],           # negative = home favored
+        "moneyline": s["home_moneyline"],
+        "opp_moneyline": s["away_moneyline"],
     })
     away = pd.DataFrame({
         "game_id":  s["game_id"],
@@ -32,7 +36,10 @@ def _team_perspective_rows(sched: pd.DataFrame) -> pd.DataFrame:
         "opp":      s["home_team"],
         "is_home":  0,
         "pts_for":  s["away_score"],
-        "pts_against": s["home_score"]
+        "pts_against": s["home_score"],
+        "spread":   -s["spread_line"],          # flip sign for away team perspective
+        "moneyline": s["away_moneyline"],
+        "opp_moneyline": s["home_moneyline"],
     })
     df = pd.concat([home, away], ignore_index=True)
     df["won"] = (df["pts_for"] > df["pts_against"]).astype(int)
